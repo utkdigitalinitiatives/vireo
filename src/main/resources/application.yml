@@ -36,33 +36,34 @@ spring:
 
   sql:
     init:
-      platform: h2
-      #platform: postgresql
+      #platform: h2
+      platform: postgresql
       #platform: mysql
 
   datasource:
     # H2
-    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    #url: jdbc:h2:file:./vireoh2.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
+    # url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    # url: jdbc:h2:file:./vireoh2.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    # driverClassName: org.h2.Driver
 
     # PostgreSQL
-    #url: jdbc:postgresql://localhost:5432/vireo
-    #driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+    driverClassName: org.postgresql.Driver
 
     # MySQL
     #url: jdbc:mysql://localhost/vireo
     #driverClassName: com.mysql.jdbc.Driver
 
     # database username and password
-    username: vireo
-    password: vireo
+    username: ${DB_USER}
+    password: ${DB_PASS}
+
 
   jpa:
     # H2
-    database-platform: org.hibernate.dialect.H2Dialect
+    #database-platform: org.hibernate.dialect.H2Dialect
     # PostgreSQL
-    #database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     # MySQL
     #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
@@ -74,6 +75,7 @@ spring:
     properties:
       hibernate:
         event.merge.entity_copy_observer: allow
+        default_schema: vireo_schema
 
     show-sql: false
 
@@ -135,30 +137,30 @@ app:
   documentType.rename: PRIMARY
 
   # edu.tamu.weaver.auth.service.UserCredentialsService
-  authority.admins: admin@tdl.org,aggieJack@tamu.edu
+  authority.admins: aalbro@utk.edu,cbj988@utk.edu,wveale@utk.edu
 
 
   security:
     # edu.tamu.weaver.auth.service.CryptoService
     secret: verysecretsecret
     # edu.tamu.weaver.filter.CorsFilter
-    allow-access: http://localhost:${server.port}
+    allow-access: https://localhost:${server.port}
 
   # edu.tamu.weaver.email.config.WeaverEmailConfig
   email:
-    host: relay.tamu.edu
-    from: noreply@library.tamu.edu
-    replyTo: helpdesk@library.tamu.edu
+    host: ${EMAIL_HOST}
+    from: ${EMAIL_FROM}
+    replyTo: ${EMAIL_REPLY_TO}
     # additional email configurations
-    #username:
-    #password:
-    #port: 587
-    #protocol: smtp
-    #channel: starttls
-    #encoding: UTF8
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    port: ${EMAIL_PORT}
+    protocol: ${EMAIL_PROTOCOL}
+    channel: ${EMAIL_CHANNEL}
+    encoding: ${EMAIL_ENCODING}
 
   # edu.tamu.weaver.reporting.controller.ReportingController
-  reporting.address: reporting@tdl.org
+  reporting.address: askdi@utk.edu
 
   # edu.tamu.weaver.validation.controller.ValidationsController
   model.packages: org.tdl.vireo.model
@@ -185,7 +187,7 @@ auth:
   security.jwt:
     secret: verysecretsecret
     issuer: localhost
-    duration: 5
+    duration: 15
 
   # edu.tamu.weaver.token.provider.controller.TokenController
   path: /auth
@@ -194,12 +196,12 @@ auth:
 # edu.tamu.weaver.token.provider.controller.TokenController
 shib:
   keys: netid,uin,lastName,firstName,email
-  subject: email
-  netid: edupersonprincipalnameunscoped
-  uin: tamuuin
-  lastName: tdl-sn
-  firstName: tdl-givenname
-  email: tdl-mail
+  subject: mail
+  netid: uid
+  uin: mail
+  lastName: sn
+  firstName: givenname
+  email: mail
 
 
 # WRO Configuration
