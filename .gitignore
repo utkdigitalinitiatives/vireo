@@ -112,3 +112,4 @@ dist/
 ### Environment Specific ###
 application-*.yml
 logback-*.yml
+vireo.env

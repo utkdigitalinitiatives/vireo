@@ -25,7 +25,7 @@ spring:
       enabled: true
       location: ${java.io.tmpdir}
       fileSizeThreshold: 0
-      maxFileSize: 20MB
+      maxFileSize: 200MB
       # Total request size for a multipart/form-data
       maxRequestSize: 20MB
 
@@ -142,7 +142,7 @@ app:
 
   security:
     # edu.tamu.weaver.auth.service.CryptoService
-    secret: verysecretsecret
+    secret: ${SECRET}
     # edu.tamu.weaver.filter.CorsFilter
     allow-access: https://localhost:${server.port}
 
@@ -185,7 +185,7 @@ app:
 # edu.tamu.weaver.token.service.TokenService
 auth:
   security.jwt:
-    secret: verysecretsecret
+    secret: ${SECRET}
     issuer: localhost
     duration: 15
 
@@ -195,14 +195,15 @@ auth:
 
 # edu.tamu.weaver.token.provider.controller.TokenController
 shib:
-  keys: netid,uin,lastName,firstName,email
+  keys: netid,institutionid,lastName,firstName,email
   subject: mail
   netid: uid
-  uin: mail
+  institutionid: eppn
   lastName: sn
   firstName: givenname
   email: mail
-
+  currentMajor: utkCurriculum
+  uin: utkStudentID
 
 # WRO Configuration
 wro:
