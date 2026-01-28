@@ -3,7 +3,7 @@
     "name": "None",
     "description": "The work will be published after approval.",
     "duration": 0,
-    "isActive": true,
+    "isActive": false,
     "systemRequired": true,
     "guarantor": 0
   },
@@ -11,7 +11,7 @@
     "name": "Journal Hold",
     "description": "The work will be delayed for publication by one year because of a restriction from publication in an academic journal.",
     "duration": 12,
-    "isActive": true,
+    "isActive": false,
     "systemRequired": true,
     "guarantor": 0
   },
@@ -19,7 +19,7 @@
     "name": "Patent Hold",
     "description": "The work will be delayed for publication by two years because of patent related activities.",
     "duration": 24,
-    "isActive": true,
+    "isActive": false,
     "systemRequired": true,
     "guarantor": 0
   },

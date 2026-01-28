@@ -27,7 +27,7 @@ spring:
       fileSizeThreshold: 0
       maxFileSize: 200MB
       # Total request size for a multipart/form-data
-      maxRequestSize: 20MB
+      maxRequestSize: 220MB
 
   h2:
     console:
@@ -144,7 +144,7 @@ app:
     # edu.tamu.weaver.auth.service.CryptoService
     secret: ${SECRET}
     # edu.tamu.weaver.filter.CorsFilter
-    allow-access: https://localhost:${server.port}
+    allow-access: https://etd.utk.edu:${server.port}
 
   # edu.tamu.weaver.email.config.WeaverEmailConfig
   email:
@@ -186,7 +186,7 @@ app:
 auth:
   security.jwt:
     secret: ${SECRET}
-    issuer: localhost
+    issuer: etd.utk.edu
     duration: 15
 
   # edu.tamu.weaver.token.provider.controller.TokenController
