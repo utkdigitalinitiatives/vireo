@@ -1,0 +1,155 @@
+<!-- EPDCX metadata block (replaces DIM in dmdSec) -->
+<dmdSec ID="vireo-mets-dmd-1" GROUPID="vireo-mets-dmd-1">
+  <mdWrap LABEL="SWAP Metadata" MDTYPE="OTHER" OTHERMDTYPE="EPDCX" MIMETYPE="text/xml">
+    <xmlData>
+      <epdcx:descriptionSet
+        xmlns:epdcx="http://purl.org/eprint/epdcx/2006-11-16/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd">
+
+        <!-- Scholarly Work -->
+        <epdcx:description epdcx:resourceId="sword-mets-epdcx-1">
+          <!-- classify as a ScholarlyWork -->
+          <epdcx:statement
+              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+              epdcx:valueURI="http://purl.org/eprint/entityType/ScholarlyWork" />
+
+          <!-- Title(s) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='title'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/title">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Abstract -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='abstract'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/abstract">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Creators -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='creator'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Subjects -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='subject'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Awarding/affiliated institution (grantor) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='degree' and fv.fieldPredicate.qualifier=='grantor'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/affiliatedInstitution">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Identifier URI (only if non-empty) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='identifier' and fv.fieldPredicate.qualifier=='uri' and #strings.isEmpty(fv.value) == false}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
+                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Advisors / committee (simple: contributor strings) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='contributor'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/contributor">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Link to Expression description -->
+          <epdcx:statement
+              epdcx:propertyURI="http://purl.org/eprint/terms/isExpressedAs"
+              epdcx:valueRef="sword-mets-expr-1" />
+        </epdcx:description>
+
+        <!-- Expression -->
+        <epdcx:description epdcx:resourceId="sword-mets-expr-1">
+          <epdcx:statement
+              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+              epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
+
+          <!-- Language (normalize to RFC3066 code if possible) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='language'}">
+              <epdcx:statement
+                  epdcx:propertyURI="http://purl.org/dc/elements/1.1/language"
+                  epdcx:vesURI="http://purl.org/dc/terms/RFC3066">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Publication/availability date from dc.date.issued -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='issued'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/available">
+                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Created / submitted dates (if present) -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='created'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/created">
+                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='submitted'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/dateSubmitted">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Provenance statements -->
+          <th:block th:each="fv : ${METS_FIELD_VALUES}">
+            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='provenance'}">
+              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/provenance">
+                <epdcx:valueString th:text="${fv.value}" />
+              </epdcx:statement>
+            </th:block>
+          </th:block>
+
+          <!-- Expression type from SUBMISSION_TYPE (optional) -->
+          <epdcx:statement
+              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+              epdcx:vesURI="http://purl.org/eprint/terms/Type"
+              th:attr="epdcx:valueURI=${'http://purl.org/eprint/type/' + #strings.replace(SUBMISSION_TYPE, ' ', '')}" />
+        </epdcx:description>
+
+        <!-- (Optional) Manifestation: include mimetype -->
+        <epdcx:description epdcx:resourceId="sword-mets-man-1">
+          <epdcx:statement
+              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+              epdcx:valueURI="http://purl.org/eprint/entityType/Manifestation" />
+          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/format">
+            <epdcx:valueString th:text="${PRIMARY_DOCUMENT_MIMETYPE}" />
+          </epdcx:statement>
+        </epdcx:description>
+
+      </epdcx:descriptionSet>
+    </xmlData>
+  </mdWrap>
+</dmdSec>
