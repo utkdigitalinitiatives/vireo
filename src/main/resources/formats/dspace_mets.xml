@@ -59,14 +59,12 @@
             </th:block>
           </th:block>
 
-          <!-- Identifier URI (only if non-empty) -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='identifier' and fv.fieldPredicate.qualifier=='uri' and #strings.isEmpty(fv.value) == false}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
-                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+          
+          <!-- SIMPLE IDENTIFIER STATEMENT (always emit, even if empty) -->
+          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
+            <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${DEPOSIT_URL}"></epdcx:valueString>
+          </epdcx:statement>
+
 
           <!-- Advisors / committee (simple: contributor strings) -->
           <th:block th:each="fv : ${METS_FIELD_VALUES}">
@@ -153,3 +151,4 @@
     </xmlData>
   </mdWrap>
 </dmdSec>
+
