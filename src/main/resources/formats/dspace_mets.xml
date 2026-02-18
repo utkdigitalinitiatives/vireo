@@ -59,12 +59,10 @@
             </th:block>
           </th:block>
 
-          
-          <!-- SIMPLE IDENTIFIER STATEMENT (always emit, even if empty) -->
+          <!-- SIMPLE IDENTIFIER STATEMENT (always emit; blank allowed) -->
           <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
             <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${DEPOSIT_URL}"></epdcx:valueString>
           </epdcx:statement>
-
 
           <!-- Advisors / committee (simple: contributor strings) -->
           <th:block th:each="fv : ${METS_FIELD_VALUES}">
@@ -87,13 +85,13 @@
               epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
               epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
 
-          <!-- Language (normalize to RFC3066 code if possible) -->
+          <!-- Language (normalize "English" -> "en") -->
           <th:block th:each="fv : ${METS_FIELD_VALUES}">
             <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='language'}">
               <epdcx:statement
                   epdcx:propertyURI="http://purl.org/dc/elements/1.1/language"
                   epdcx:vesURI="http://purl.org/dc/terms/RFC3066">
-                <epdcx:valueString th:text="${fv.value}" />
+                <epdcx:valueString th:text="${#strings.equalsIgnoreCase(fv.value, 'English') ? 'en' : fv.value}" />
               </epdcx:statement>
             </th:block>
           </th:block>
@@ -130,11 +128,10 @@
             </th:block>
           </th:block>
 
-          <!-- Expression type from SUBMISSION_TYPE (optional) -->
-          <epdcx:statement
-              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
-              epdcx:vesURI="http://purl.org/eprint/terms/Type"
-              th:attr="epdcx:valueURI=${'http://purl.org/eprint/type/' + #strings.replace(SUBMISSION_TYPE, ' ', '')}" />
+          <!-- Submission type (literal, mirrors original DIM behavior) -->
+          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type">
+            <epdcx:valueString th:text="${SUBMISSION_TYPE}" />
+          </epdcx:statement>
         </epdcx:description>
 
         <!-- (Optional) Manifestation: include mimetype -->
@@ -151,4 +148,3 @@
     </xmlData>
   </mdWrap>
 </dmdSec>
-
