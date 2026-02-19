@@ -160,7 +160,7 @@ app:
     encoding: ${EMAIL_ENCODING}
 
   # edu.tamu.weaver.reporting.controller.ReportingController
-  reporting.address: askdi@utk.edu
+  reporting.address: {REPORTING_EMAIL}
 
   # edu.tamu.weaver.validation.controller.ValidationsController
   model.packages: org.tdl.vireo.model
