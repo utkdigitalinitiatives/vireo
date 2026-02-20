@@ -1,150 +1,304 @@
-<!-- EPDCX metadata block (replaces DIM in dmdSec) -->
-<dmdSec ID="vireo-mets-dmd-1" GROUPID="vireo-mets-dmd-1">
-  <mdWrap LABEL="SWAP Metadata" MDTYPE="OTHER" OTHERMDTYPE="EPDCX" MIMETYPE="text/xml">
-    <xmlData>
-      <epdcx:descriptionSet
-        xmlns:epdcx="http://purl.org/eprint/epdcx/2006-11-16/"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--
+  EPDCX-based METS SIP for Vireo → DSpace/EPrints SWORD.
+  Root mets/metsHdr/fileSec/structMap mirror the original Vireo DIM template.
+  The <dmdSec> payload is EPDCX but sources the SAME Vireo variables/collections as before.
+-->
 
-        <!-- Scholarly Work -->
-        <epdcx:description epdcx:resourceId="sword-mets-epdcx-1">
-          <!-- classify as a ScholarlyWork -->
-          <epdcx:statement
-              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
-              epdcx:valueURI="http://purl.org/eprint/entityType/ScholarlyWork" />
+<mets
+  ID="vireo-mets-1"
+  th:attr="OBJID=${'vireo-submission-' + SUBMISSION_ID}"
+  LABEL="DSpace Item"
+  PROFILE="DSpace METS SIP Profile 1.0"
+  xmlns="http://www.loc.gov/METS/"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
 
-          <!-- Title(s) -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='title'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/title">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+  <!-- ===== METS Header (unchanged from original) ===== -->
+  <metsHdr th:attr="CREATEDATE=${TIME}">
+    <agent ROLE="CREATOR" TYPE="OTHER">
+      <name th:text="${AGENT}"></name>
+    </agent>
+  </metsHdr>
 
-          <!-- Abstract -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='abstract'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/abstract">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+  <!-- ===== Descriptive Metadata: EPDCX replacement (pulls same fields as original DIM) ===== -->
+  <dmdSec ID="vireo-mets-dmd-1" GROUPID="vireo-mets-dmd-1">
+    <mdWrap LABEL="SWAP Metadata" MDTYPE="OTHER" OTHERMDTYPE="EPDCX" MIMETYPE="text/xml">
+      <xmlData>
+        <epdcx:descriptionSet
+          xmlns:epdcx="http://purl.org/eprint/epdcx/2006-11-16/"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd">
 
-          <!-- Creators -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='creator'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+          <!-- ============ Scholarly Work ============ -->
+          <epdcx:description epdcx:resourceId="sword-mets-epdcx-1">
+            <!-- classify as ScholarlyWork -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+                epdcx:valueURI="http://purl.org/eprint/entityType/ScholarlyWork" />
 
-          <!-- Subjects -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='subject'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- dc.creator (mirror original: STUDENT_FULL_NAME_WITH_BIRTH_YEAR) -->
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+              <epdcx:valueString th:text="${STUDENT_FULL_NAME_WITH_BIRTH_YEAR}"/>
+            </epdcx:statement>
 
-          <!-- Awarding/affiliated institution (grantor) -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='degree' and fv.fieldPredicate.qualifier=='grantor'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/affiliatedInstitution">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- Titles (dc.title) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/title"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='title'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-          <!-- SIMPLE IDENTIFIER STATEMENT (always emit; blank allowed) -->
-          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
-            <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${DEPOSIT_URL}"></epdcx:valueString>
-          </epdcx:statement>
+            <!-- Abstract (dc.description.abstract) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/abstract"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='abstract'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-          <!-- Advisors / committee (simple: contributor strings) -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='contributor'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/contributor">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- Subjects (dc.subject) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='subject'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-          <!-- Link to Expression description -->
-          <epdcx:statement
-              epdcx:propertyURI="http://purl.org/eprint/terms/isExpressedAs"
-              epdcx:valueRef="sword-mets-expr-1" />
-        </epdcx:description>
+            <!-- Advisors/Committee (dc.contributor.* as literals) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/contributor"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='contributor'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-        <!-- Expression -->
-        <epdcx:description epdcx:resourceId="sword-mets-expr-1">
-          <epdcx:statement
-              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
-              epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
+            <!-- thesis.educationalLevel (e.g., Doctor of Philosophy) -->
+            <epdcx:statement
+                epdcx:propertyURI="https://your.org/terms/thesis.educationalLevel"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='educationalLevel'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-          <!-- Language (normalize "English" -> "en") -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='language'}">
-              <epdcx:statement
-                  epdcx:propertyURI="http://purl.org/dc/elements/1.1/language"
-                  epdcx:vesURI="http://purl.org/dc/terms/RFC3066">
-                <epdcx:valueString th:text="${#strings.equalsIgnoreCase(fv.value, 'English') ? 'en' : fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- thesis.inSupportOf (e.g., Botany / supporting discipline) -->
+            <epdcx:statement
+                epdcx:propertyURI="https://your.org/terms/thesis.inSupportOf"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='inSupportOf'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
 
-          <!-- Publication/availability date from dc.date.issued -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='issued'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/available">
-                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- Identifier: always emit (blank allowed) from DEPOSIT_URL -->
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
+              <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${DEPOSIT_URL}"></epdcx:valueString>
+            </epdcx:statement>
 
-          <!-- Created / submitted dates (if present) -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='created'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/created">
-                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='date' and fv.fieldPredicate.qualifier=='submitted'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/dateSubmitted">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- Degree Grantor (mirror original GRANTOR) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/eprint/terms/affiliatedInstitution"
+                th:if="${GRANTOR != null}">
+              <epdcx:valueString th:text="${GRANTOR}" />
+            </epdcx:statement>
 
-          <!-- Provenance statements -->
-          <th:block th:each="fv : ${METS_FIELD_VALUES}">
-            <th:block th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='provenance'}">
-              <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/provenance">
-                <epdcx:valueString th:text="${fv.value}" />
-              </epdcx:statement>
-            </th:block>
-          </th:block>
+            <!-- Link Work -> Expression -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/eprint/terms/isExpressedAs"
+                epdcx:valueRef="sword-mets-expr-1" />
+          </epdcx:description>
 
-          <!-- Submission type (literal, mirrors original DIM behavior) -->
-          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type">
-            <epdcx:valueString th:text="${SUBMISSION_TYPE}" />
-          </epdcx:statement>
-        </epdcx:description>
+          <!-- ============ Expression ============ -->
+          <epdcx:description epdcx:resourceId="sword-mets-expr-1">
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+                epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
 
-        <!-- (Optional) Manifestation: include mimetype -->
-        <epdcx:description epdcx:resourceId="sword-mets-man-1">
-          <epdcx:statement
-              epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
-              epdcx:valueURI="http://purl.org/eprint/entityType/Manifestation" />
-          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/format">
-            <epdcx:valueString th:text="${PRIMARY_DOCUMENT_MIMETYPE}" />
-          </epdcx:statement>
-        </epdcx:description>
+            <!-- Language: normalize "English" -> "en", else pass-through -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/language"
+                epdcx:vesURI="http://purl.org/dc/terms/RFC3066"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='language'}">
+              <epdcx:valueString th:text="${#strings.equalsIgnoreCase(fv.value, 'English') ? 'en' : fv.value}"/>
+            </epdcx:statement>
 
-      </epdcx:descriptionSet>
-    </xmlData>
-  </mdWrap>
-</dmdSec>
+            <!-- Availability/Publication date (old DIM's dc.date.issued) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/available"
+                th:if="${GRADUATION_YEAR_MONTH != null}">
+              <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${GRADUATION_YEAR_MONTH}"/>
+            </epdcx:statement>
+
+            <!-- Created (mirror old DIM) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/created"
+                th:if="${GRADUATION_YEAR_MONTH != null}">
+              <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${GRADUATION_YEAR_MONTH}"/>
+            </epdcx:statement>
+
+            <!-- Submitted (mirror old DIM) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/dateSubmitted"
+                th:if="${GRADUATION_MONTH_YEAR != null}">
+              <epdcx:valueString th:text="${GRADUATION_MONTH_YEAR}"/>
+            </epdcx:statement>
+
+            <!-- Submission type as literal (mirror old DIM) -->
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type">
+              <epdcx:valueString th:text="${SUBMISSION_TYPE}" />
+            </epdcx:statement>
+
+            <!-- Provenance statements (mirror old DIM strings) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${LICENSE_AGREEMENT_DATE != null}">
+              <epdcx:valueString th:text="${'The student, ' + STUDENT_SHORT_NAME + ', accepted the attached license on ' + FORMATTED_LICENSE_AGREEMENT_DATE + '.'}"/>
+            </epdcx:statement>
+
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${SUBMISSION_DATE != null}">
+              <epdcx:valueString th:text="${'The student, ' + STUDENT_SHORT_NAME + ', submitted this ' + SUBMISSION_TYPE + ' for approval of ' + FORMATTED_SUBMISSION_DATE + '.'}"/>
+            </epdcx:statement>
+
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${COMMITTEE_APPROVAL_DATE != null}">
+              <epdcx:valueString th:text="${'The committee advisor approved this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_APPROVAL_DATE + '.'}"/>
+            </epdcx:statement>
+
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${COMMITTEE_EMBARGO_APPROVAL_DATE != null}">
+              <epdcx:valueString th:text="${'The committee advisor approved the embargo selection for this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_EMBARGO_APPROVAL_DATE + '.'}"/>
+            </epdcx:statement>
+
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${APPROVAL_DATE != null}">
+              <epdcx:valueString th:text="${'This ' + SUBMISSION_TYPE + ' was approved for publication on ' + FORMATTED_APPROVAL_DATE + '.'}"/>
+            </epdcx:statement>
+
+            <!-- Always include generation note -->
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/provenance">
+              <epdcx:valueString th:text="${'DSpace METS Submission Ingestion Package generated from Vireo submission ' + SUBMISSION_ID + ' on ' + TIME}"/>
+            </epdcx:statement>
+          </epdcx:description>
+
+          <!-- ============ Manifestation (optional) ============ -->
+          <epdcx:description epdcx:resourceId="sword-mets-man-1">
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
+                epdcx:valueURI="http://purl.org/eprint/entityType/Manifestation" />
+            <!-- dc.format.mimetype -->
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/format">
+              <epdcx:valueString th:text="${PRIMARY_DOCUMENT_MIMETYPE}" />
+            </epdcx:statement>
+          </epdcx:description>
+
+          <!-- ============ Local embargo (mirror DIM logic) ============ -->
+          <epdcx:description epdcx:resourceId="sword-mets-local-1">
+            <!-- local.embargo.terms -->
+            <epdcx:statement
+                epdcx:propertyURI="https://your.org/terms/local.embargo.terms"
+                th:if="${EMBARGO_LIFT_DATE != null}">
+              <epdcx:valueString th:text="${EMBARGO_LIFT_DATE}" />
+            </epdcx:statement>
+
+            <!-- local.embargo.lift -->
+            <epdcx:statement
+                epdcx:propertyURI="https://your.org/terms/local.embargo.lift"
+                th:if="${EMBARGO_LIFT_DATE != null}">
+              <epdcx:valueString th:text="${EMBARGO_LIFT_DATE}" />
+            </epdcx:statement>
+
+            <!-- committee embargo provenance -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
+                th:if="${COMMITTEE_EMBARGO_APPROVAL_DATE != null}">
+              <epdcx:valueString th:text="${'The committee advisor approved the embargo selection for this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_EMBARGO_APPROVAL_DATE + '.'}"/>
+            </epdcx:statement>
+          </epdcx:description>
+
+        </epdcx:descriptionSet>
+      </xmlData>
+    </mdWrap>
+  </dmdSec>
+
+  <!-- ===== fileSec (unchanged from original) ===== -->
+  <fileSec>
+    <fileGrp ID="vireo-mets-fgrp-1" USE="CONTENT">
+      <!-- Primary Document -->
+      <file
+        th:if="${PRIMARY_DOCUMENT_FIELD_VALUE != null}"
+        SEQ="1"
+        th:attr="GROUPID=${'piper-mets-file-group-' + PRIMARY_DOCUMENT_FIELD_VALUE.fieldPredicate.id},
+                 ID=${'piper-mets-file-' + PRIMARY_DOCUMENT_FIELD_VALUE.id},
+                 MIMETYPE=${PRIMARY_DOCUMENT_MIMETYPE}">
+        <FLocat
+          LOCTYPE="URL"
+          th:attr="'xlink:href'=${PRIMARY_DOCUMENT_FIELD_VALUE.getExportFileName()}"/>
+      </file>
+
+      <!-- Supplemental And Source Documents -->
+      <file
+        th:each="fv,iter : ${SUPPLEMENTAL_AND_SOURCE_DOCUMENT_FIELD_VALUES}"
+        th:attr="GROUPID=${'piper-mets-file-group-' + fv.fieldPredicate.id},
+                 ID=${'piper-mets-file-' + fv.id},
+                 MIMETYPE=${FILE_HELPER.getMimeTypeOfAsset(fv.value)},
+                 SEQ=${iter.index + 2}">
+        <FLocat
+          LOCTYPE="URL"
+          th:attr="'xlink:href'=${fv.getExportFileName()}"/>
+      </file>
+    </fileGrp>
+
+    <fileGrp ID="vireo-mets-fgrp-2" USE="LICENSE">
+      <!-- Licence Documents -->
+      <file
+        th:each="fv,iter : ${LICENSE_DOCUMENT_FIELD_VALUES}"
+        th:attr="GROUPID=${'piper-mets-file-group-' + fv.fieldPredicate.id},
+                 ID=${'piper-mets-file-' + fv.id},
+                 MIMETYPE=${FILE_HELPER.getMimeTypeOfAsset(fv.value)},
+                 SEQ=${iter.index + 2}">
+        <FLocat
+          LOCTYPE="URL"
+          th:attr="'xlink:href'=${fv.getFileName()}"/>
+      </file>
+    </fileGrp>
+  </fileSec>
+
+  <!-- ===== structMap (unchanged from original) ===== -->
+  <structMap ID="vireo-mets-struct-1" LABEL="structure" TYPE="LOGICAL">
+    <div ID="vireo-mets-div-1" DMDID="vireo-mets-dmd-1" TYPE="DSpace Item">
+      <!-- Set the primary bitstream to the primary document -->
+      <fptr th:if="${PRIMARY_DOCUMENT_FIELD_VALUE != null}"
+            th:attr="FILEID=${'piper-mets-file-' + PRIMARY_DOCUMENT_FIELD_VALUE.id}"/>
+
+      <!-- Bitstream div for primary document -->
+      <div th:if="${PRIMARY_DOCUMENT_FIELD_VALUE != null}"
+           th:attr="ID=${'piper-mets-div-' + PRIMARY_DOCUMENT_FIELD_VALUE.id}"
+           TYPE="DSpace Content Bitstream">
+        <ftpr th:attr="FILEID=${'piper-mets-file-' + PRIMARY_DOCUMENT_FIELD_VALUE.id}"/>
+      </div>
+
+      <!-- Bitstream divs for supplemental/source docs -->
+      <div th:each="fv : ${SUPPLEMENTAL_AND_SOURCE_DOCUMENT_FIELD_VALUES}"
+           th:attr="ID=${'piper-mets-div-' + fv.id}"
+           TYPE="DSpace Content Bitstream">
+        <ftpr th:attr="FILEID=${'piper-mets-file-' + fv.id}"/>
+      </div>
+
+      <!-- Bitstream divs for license docs -->
+      <div th:each="fv : ${LICENSE_DOCUMENT_FIELD_VALUES}"
+           th:attr="ID=${'piper-mets-div-' + fv.id}"
+           TYPE="DSpace Content Bitstream">
+        <ftpr th:attr="FILEID=${'piper-mets-file-' + fv.id}"/>
+      </div>
+    </div>
+  </structMap>
+
+</mets>
+``
