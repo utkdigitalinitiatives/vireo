@@ -75,21 +75,21 @@
               <epdcx:valueString th:text="${fv.value}" />
             </epdcx:statement>
 
-            <!-- thesis.educationalLevel (e.g., Doctor of Philosophy) -->
+           
+            <!-- Degree name / major from direct variables -->
             <epdcx:statement
-                epdcx:propertyURI="https://your.org/terms/thesis.educationalLevel"
-                th:each="fv : ${METS_FIELD_VALUES}"
-                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='educationalLevel'}">
-              <epdcx:valueString th:text="${fv.value}" />
+                epdcx:propertyURI="https://your.org/terms/thesis.degree.name"
+                th:if="${DEGREE_NAME != null and !#strings.isEmpty(DEGREE_NAME)}">
+              <epdcx:valueString th:text="${DEGREE_NAME}"/>
             </epdcx:statement>
+          
+            <epdcx:statement
+                epdcx:propertyURI="https://your.org/terms/thesis.degree.major"
+                th:if="${DEGREE_MAJOR != null and !#strings.isEmpty(DEGREE_MAJOR)}">
+              <epdcx:valueString th:text="${DEGREE_MAJOR}"/>
+            </epdcx:statement>
+          </epdcx:description>
 
-            <!-- thesis.inSupportOf (e.g., Botany / supporting discipline) -->
-            <epdcx:statement
-                epdcx:propertyURI="https://your.org/terms/thesis.inSupportOf"
-                th:each="fv : ${METS_FIELD_VALUES}"
-                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='inSupportOf'}">
-              <epdcx:valueString th:text="${fv.value}" />
-            </epdcx:statement>
 
             <!-- Identifier: always emit (blank allowed) from DEPOSIT_URL -->
             <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
