@@ -13,6 +13,7 @@
   xmlns="http://www.loc.gov/METS/"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:th="http://www.thymeleaf.org"
   xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
 
   <!-- ===== METS Header (unchanged from original) ===== -->
@@ -88,7 +89,6 @@
                 th:if="${DEGREE_MAJOR != null and !#strings.isEmpty(DEGREE_MAJOR)}">
               <epdcx:valueString th:text="${DEGREE_MAJOR}"/>
             </epdcx:statement>
-          </epdcx:description>
 
 
             <!-- Identifier: always emit (blank allowed) from DEPOSIT_URL -->
