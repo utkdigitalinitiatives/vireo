@@ -44,7 +44,7 @@
               <epdcx:valueString th:text="${STUDENT_FULL_NAME_WITH_BIRTH_YEAR}"/>
             </epdcx:statement>
 
-            <!-- Titles (dc.title) -->
+            <!-- Titles (dc.title) works in SWORD to DSpace -->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/title"
                 th:each="fv : ${METS_FIELD_VALUES}"
@@ -52,15 +52,23 @@
               <epdcx:valueString th:text="${fv.value}" />
             </epdcx:statement>
 
-            <!-- Abstract (dc.description.abstract) -->
+            <!-- Abstract (dc.description.abstract) works in SWORD to DSpace -->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/terms/abstract"
                 th:each="fv : ${METS_FIELD_VALUES}"
-                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description' and fv.fieldPredicate.qualifier=='abstract'}">
+                th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='description'}">
               <epdcx:valueString th:text="${fv.value}" />
             </epdcx:statement>
 
-            <!-- Subjects (dc.subject) -->
+            <!-- Keywords (dc.subject) -->
+            <epdcx:statement
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='keywords'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
+
+            <!-- Subject (dc.subject) -->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
                 th:each="fv : ${METS_FIELD_VALUES}"
@@ -73,30 +81,31 @@
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/contributor"
                 th:each="fv : ${METS_FIELD_VALUES}"
                 th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='contributor'}">
-              <epdcx:valueString th:text="${fv.value}" />
+              <epdcx:valueString th:text="${#strings.trim(#strings.replace(fv.value, 'Dr. ', ''))}" />
             </epdcx:statement>
-
-           
-            <!-- Degree name / major from direct variables -->
-            <epdcx:statement
-                epdcx:propertyURI="https://your.org/terms/thesis.degree.name"
-                th:if="${DEGREE_NAME != null and !#strings.isEmpty(DEGREE_NAME)}">
-              <epdcx:valueString th:text="${DEGREE_NAME}"/>
-            </epdcx:statement>
-          
-            <epdcx:statement
-                epdcx:propertyURI="https://your.org/terms/thesis.degree.major"
-                th:if="${DEGREE_MAJOR != null and !#strings.isEmpty(DEGREE_MAJOR)}">
-              <epdcx:valueString th:text="${DEGREE_MAJOR}"/>
-            </epdcx:statement>
-
 
             <!-- Identifier: always emit (blank allowed) from DEPOSIT_URL -->
             <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
               <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI" th:text="${DEPOSIT_URL}"></epdcx:valueString>
             </epdcx:statement>
 
-            <!-- Degree Grantor (mirror original GRANTOR) -->
+            <!-- Degree -->
+            <epdcx:statement 
+                epdcx:propertyURI="https://your.org/terms/thesis.educationalLevel"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='degree' and fv.fieldPredicate.qualifier=='name'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
+
+            <!-- Major -->
+            <epdcx:statement 
+                epdcx:propertyURI="https://your.org/terms/thesis.inSupportOf"
+                th:each="fv : ${METS_FIELD_VALUES}"
+                th:if="${fv.fieldPredicate.schema=='thesis' and fv.fieldPredicate.element=='degree' and fv.fieldPredicate.qualifier=='major'}">
+              <epdcx:valueString th:text="${fv.value}" />
+            </epdcx:statement>
+
+            <!-- FIX Degree Grantor (mirror original GRANTOR) -->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/eprint/terms/affiliatedInstitution"
                 th:if="${GRANTOR != null}">
@@ -115,7 +124,7 @@
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
                 epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
 
-            <!-- Language: normalize "English" -> "en", else pass-through -->
+            <!-- Language: normalize "English" -> "en", else pass-through works in SWORD to DSpace -->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/language"
                 epdcx:vesURI="http://purl.org/dc/terms/RFC3066"
@@ -124,81 +133,21 @@
               <epdcx:valueString th:text="${#strings.equalsIgnoreCase(fv.value, 'English') ? 'en' : fv.value}"/>
             </epdcx:statement>
 
-            <!-- Availability/Publication date (old DIM's dc.date.issued) -->
+            <!-- Availability/Publication date-->
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/terms/available"
                 th:if="${GRADUATION_YEAR_MONTH != null}">
               <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${GRADUATION_YEAR_MONTH}"/>
             </epdcx:statement>
 
-            <!-- Created (mirror old DIM) -->
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/created"
-                th:if="${GRADUATION_YEAR_MONTH != null}">
-              <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF" th:text="${GRADUATION_YEAR_MONTH}"/>
-            </epdcx:statement>
-
-            <!-- Submitted (mirror old DIM) -->
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/dateSubmitted"
-                th:if="${GRADUATION_MONTH_YEAR != null}">
-              <epdcx:valueString th:text="${GRADUATION_MONTH_YEAR}"/>
-            </epdcx:statement>
-
-            <!-- Submission type as literal (mirror old DIM) -->
+            <!-- Submission type as literal-->
             <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type">
               <epdcx:valueString th:text="${SUBMISSION_TYPE}" />
             </epdcx:statement>
 
-            <!-- Provenance statements (mirror old DIM strings) -->
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${LICENSE_AGREEMENT_DATE != null}">
-              <epdcx:valueString th:text="${'The student, ' + STUDENT_SHORT_NAME + ', accepted the attached license on ' + FORMATTED_LICENSE_AGREEMENT_DATE + '.'}"/>
-            </epdcx:statement>
-
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${SUBMISSION_DATE != null}">
-              <epdcx:valueString th:text="${'The student, ' + STUDENT_SHORT_NAME + ', submitted this ' + SUBMISSION_TYPE + ' for approval of ' + FORMATTED_SUBMISSION_DATE + '.'}"/>
-            </epdcx:statement>
-
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${COMMITTEE_APPROVAL_DATE != null}">
-              <epdcx:valueString th:text="${'The committee advisor approved this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_APPROVAL_DATE + '.'}"/>
-            </epdcx:statement>
-
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${COMMITTEE_EMBARGO_APPROVAL_DATE != null}">
-              <epdcx:valueString th:text="${'The committee advisor approved the embargo selection for this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_EMBARGO_APPROVAL_DATE + '.'}"/>
-            </epdcx:statement>
-
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${APPROVAL_DATE != null}">
-              <epdcx:valueString th:text="${'This ' + SUBMISSION_TYPE + ' was approved for publication on ' + FORMATTED_APPROVAL_DATE + '.'}"/>
-            </epdcx:statement>
-
-            <!-- Always include generation note -->
-            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/provenance">
-              <epdcx:valueString th:text="${'DSpace METS Submission Ingestion Package generated from Vireo submission ' + SUBMISSION_ID + ' on ' + TIME}"/>
-            </epdcx:statement>
           </epdcx:description>
 
-          <!-- ============ Manifestation (optional) ============ -->
-          <epdcx:description epdcx:resourceId="sword-mets-man-1">
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/elements/1.1/type"
-                epdcx:valueURI="http://purl.org/eprint/entityType/Manifestation" />
-            <!-- dc.format.mimetype -->
-            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/format">
-              <epdcx:valueString th:text="${PRIMARY_DOCUMENT_MIMETYPE}" />
-            </epdcx:statement>
-          </epdcx:description>
-
-          <!-- ============ Local embargo (mirror DIM logic) ============ -->
+          <!-- ============ Local embargo ============ -->
           <epdcx:description epdcx:resourceId="sword-mets-local-1">
             <!-- local.embargo.terms -->
             <epdcx:statement
@@ -214,12 +163,6 @@
               <epdcx:valueString th:text="${EMBARGO_LIFT_DATE}" />
             </epdcx:statement>
 
-            <!-- committee embargo provenance -->
-            <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/terms/provenance"
-                th:if="${COMMITTEE_EMBARGO_APPROVAL_DATE != null}">
-              <epdcx:valueString th:text="${'The committee advisor approved the embargo selection for this ' + SUBMISSION_TYPE + ' on ' + FORMATTED_COMMITTEE_EMBARGO_APPROVAL_DATE + '.'}"/>
-            </epdcx:statement>
           </epdcx:description>
 
         </epdcx:descriptionSet>
