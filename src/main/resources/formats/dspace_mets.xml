@@ -62,7 +62,7 @@
 
             <!-- Keywords (dc.subject) -->
             <epdcx:statement
-                epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
+                epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject">
               <epdcx:valueString 
                 th:each="kw : ${SUBMISSION.getKeywordFieldValues()}"
                 th:text="${kw.value}" />
