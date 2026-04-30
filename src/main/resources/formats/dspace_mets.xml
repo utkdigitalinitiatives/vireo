@@ -64,8 +64,8 @@
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject">
               <epdcx:valueString 
-                th:each="kw : ${SUBMISSION.getKeywordFieldValues()}"
-                th:text="${kw.value}" />
+                th:each="keyword : ${KEYWORD_FIELD_VALUES}"
+                th:text="${#strings.trim(keyword.value)}" />
             </epdcx:statement>
 
             <!-- Subject (dc.subject) -->
