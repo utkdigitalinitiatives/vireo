@@ -72,6 +72,9 @@ public class DSpaceMetsFormatter extends AbstractFormatter {
                     }
                 }).collect(Collectors.toList()));
                 break;
+            case KEYWORD_FIELD_VALUES:
+                context.setVariable(key.name(), submission.getKeywordFieldValues());
+                break;
             case GRADUATION_MONTH_YEAR:
                 context.setVariable(key.name(), submissionHelperUtility.getGraduationMonthYearString());
                 break;
