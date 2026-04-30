@@ -64,8 +64,8 @@
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
                 th:each="fv : ${METS_FIELD_VALUES}"
-                th:if="${fv.fieldPredicate.schema=='keywords'}">
-              <epdcx:valueString th:text="${fv.value}" />
+                th:if="${KEYWORDS != null}">
+              <epdcx:valueString th:text="${KEYWORDS}" />
             </epdcx:statement>
 
             <!-- Subject (dc.subject) -->
