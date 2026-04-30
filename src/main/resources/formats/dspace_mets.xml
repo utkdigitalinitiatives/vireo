@@ -64,8 +64,8 @@
             <epdcx:statement
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/subject"
                 th:each="fv : ${METS_FIELD_VALUES}"
-                th:if="${fv.fieldPredicate.schema=='keywords'}">
-              <epdcx:valueString th:text="${fv.value}" />
+                th:if="${KEYWORDS != null}">
+              <epdcx:valueString th:text="${KEYWORDS}" />
             </epdcx:statement>
 
             <!-- Subject (dc.subject) -->
@@ -81,7 +81,7 @@
                 epdcx:propertyURI="http://purl.org/dc/elements/1.1/contributor"
                 th:each="fv : ${METS_FIELD_VALUES}"
                 th:if="${fv.fieldPredicate.schema=='dc' and fv.fieldPredicate.element=='contributor'}">
-              <epdcx:valueString th:text="${#strings.trim(#strings.replace(fv.value, 'Dr. ', ''))}" />
+              <epdcx:valueString th:text="${#strings.trim(#strings.replace(#strings.replace(#strings.replace(fv.value, 'Dr. ', ''), ', Ph.D.', ''), ', PhD', ''))}" />
             </epdcx:statement>
 
             <!-- Identifier: always emit (blank allowed) from DEPOSIT_URL -->
